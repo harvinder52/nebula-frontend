@@ -3,7 +3,8 @@
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import nebulaImage from "../../../public/assets/nebula.jpg";
+import nebulaImage from "../public/assets/nebula.jpg";
+import Cards from "./Cards";
 
 function HeroContainer() {
   const [data, setData] = useState([]);
@@ -76,9 +77,13 @@ function HeroContainer() {
 
         {/* Display the data when not loading and no error */}
         {!isLoading && !isError && (
-          <textarea mt-4 rows="10" cols="100">
-            {JSON.stringify(data, undefined, 4)}
-          </textarea>
+          <div className="fade-in show">
+            <Cards />
+          </div>
+
+          // <textarea mt-4 rows="10" cols="100">
+          //   {JSON.stringify(data, undefined, 4)}
+          // </textarea>
         )}
       </div>
     </div>
