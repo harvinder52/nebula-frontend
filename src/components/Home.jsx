@@ -1,10 +1,10 @@
-"use client";
-
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import nebulaImage from "../public/assets/nebula.jpg";
+import nebulaImage from "../assets/nebula.jpg";
 import Cards from "./Cards";
+import { useDispatch, useSelector } from "react-redux";
+import { setFormData } from "../features/formSlice";
 
 function HeroContainer() {
   const [data, setData] = useState([]);
@@ -15,6 +15,8 @@ function HeroContainer() {
   const [isLoading, setIsLoading] = useState(false); // Initialize isLoading as false
   const [isError, setIsError] = useState(false);
 
+  const dispatch = useDispatch();
+
   async function fetchData() {
     setIsLoading(true); // Set isLoading to true while the request is in progress
     setIsError(false); // Reset isError to false
@@ -23,6 +25,7 @@ function HeroContainer() {
       const result = response.data;
       console.log(result);
       setData(result);
+      dispatch(setFormData(result));
     } catch (error) {
       setIsError(true); // Set isError to true if an error occurs
       console.error("API request error:", error);
