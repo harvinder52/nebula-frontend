@@ -2,78 +2,6 @@ import React from "react";
 import { useState } from "react";
 
 import { useSelector } from "react-redux";
-const formData22 = {
-  Title: "Contact Information",
-  Header: "Contact information",
-  Desc: "",
-  Path: "/forms",
-  Action: "e/1FAIpQLSdMcf4ie0pBmM4gG77dtgw2mNjUB6q_lxaXlfKEuYlLgi5EDA",
-  Fbzx: "665421586129700482",
-  SectionCount: 1,
-  AskEmail: false,
-  Fields: [
-    {
-      ID: 1633920210,
-      Label: "Name",
-      Desc: "",
-      TypeID: 0,
-      Widgets: [
-        {
-          ID: "2005620554",
-          required: true,
-        },
-      ],
-    },
-    {
-      ID: 227649005,
-      Label: "Email",
-      Desc: "",
-      TypeID: 0,
-      Widgets: [
-        {
-          ID: "1045781291",
-          required: true,
-        },
-      ],
-    },
-    {
-      ID: 790080973,
-      Label: "Address",
-      Desc: "",
-      TypeID: 1,
-      Widgets: [
-        {
-          ID: "1065046570",
-          required: true,
-        },
-      ],
-    },
-    {
-      ID: 1770822543,
-      Label: "Phone number",
-      Desc: "",
-      TypeID: 0,
-      Widgets: [
-        {
-          ID: "1166974658",
-          required: false,
-        },
-      ],
-    },
-    {
-      ID: 1846923513,
-      Label: "Comments",
-      Desc: "",
-      TypeID: 1,
-      Widgets: [
-        {
-          ID: "839337160",
-          required: false,
-        },
-      ],
-    },
-  ],
-};
 
 function Form() {
   const formData = useSelector((state) => state.formReducer.value);
@@ -83,7 +11,8 @@ function Form() {
 
   const initialFormData = {};
   formData.Fields.forEach((field) => {
-    initialFormData[`entry.${field.ID}`] = "";
+    console.log(field.Widgets[0].ID);
+    initialFormData[`entry.${field.Widgets[0].ID}`] = "";
   });
 
   console.log(initialFormData);
@@ -95,8 +24,27 @@ function Form() {
       ...formValues,
       [name]: value,
     });
-    console.log("formbalues", formValues);
+    console.log("form values", formValues, formActionURL);
   };
+
+  function getInputData() {
+    let dataToPost = new FormData(); //formdata API
+
+    for (const key in formValues) {
+      console.log(`"${key}"`, `"${formValues[key]}"`);
+
+      dataToPost.append(key, formValues[key]);
+    }
+    // dataToPost.append("entry.1741648865", formValues["entry.1741648865"]);
+    // dataToPost.append("entry.347094691", "harvinder");
+    // dataToPost.append("entry.1979937581", "harvinder");
+    // dataToPost.append("entry.534076170", "harvinder");
+    // dataToPost.append("entry.544181557", "harvinder");
+    console.log(dataToPost);
+
+    return dataToPost;
+  }
+  console.log(formValues["entry.1741648865"]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -104,24 +52,22 @@ function Form() {
     try {
       const form = e.target;
       console.log(form);
-      let submitFormData = new FormData(form);
-      for (const key in formValues) {
-        console.log(key, formValues[key]);
-        submitFormData.append(key, formValues[key]);
-        console.log("submmitted", submitFormData);
-      }
-
-      console.log("submmitted", submitFormData);
+      let submitFormData = new FormData();
 
       const response = await fetch(formActionURL, {
         method: "POST",
-        body: submitFormData,
+        body: getInputData(),
 
         mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      })
+        .then((data) => {
+          console.log(data);
+          alert("Form Submitted");
+        })
+        .catch((err) => console.error(err));
 
       if (response.ok) {
         console.log("Form submitted successfully");
@@ -144,28 +90,22 @@ function Form() {
 
       {!formSubmitted ? (
         <form
+          action={formActionURL}
+          method="POST"
           onSubmit={handleSubmit}
           className="max-w-md mx-auto p-4 border rounded-lg shadow-lg"
         >
           {formData.Fields.map((field) => (
-            <div key={field.ID} className="mb-4">
-              <label
-                htmlFor={`inp${field.ID}`}
-                className="block text-gray-600 text-sm font-semibold mb-1"
-              >
-                {field.Label}
-              </label>
-              <input
-                type={field.TypeID === 0 ? "text" : "email"}
-                name={`entry.${field.ID}`}
-                id={`inp${field.ID}`}
-                required={field.Widgets[0].required}
-                placeholder={field.Label}
-                className="w-full px-4 text-white py-2 text-blue rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
-                value={formValues[`entry.${field.ID}`]}
-                onChange={handleInputChange}
-              />
-            </div>
+            <input
+              type={field.TypeID === 0 ? "text" : "email"}
+              name={`entry.${field.Widgets[0].ID}`}
+              id={`inp${field.Widgets[0].ID}`}
+              required={field.Widgets[0].required}
+              placeholder={field.Label}
+              className="w-full px-4 text-white py-2 text-blue rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+              value={formValues[`entry.${field.Widgets[0].ID}`]}
+              onChange={handleInputChange}
+            />
           ))}
 
           <button
