@@ -5,8 +5,6 @@ import Home from "./components/Home";
 import Form from "./components/Form";
 import { About } from "./components/About";
 
-import "./App.css";
-
 function App() {
   const [count, setCount] = useState(0);
 
