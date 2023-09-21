@@ -50,10 +50,13 @@ function HeroContainer() {
         </div>
       </nav>
       <div
-        style={{ backgroundImage: `url(${nebulaImage.src})` }}
+        style={{
+          backgroundImage: `url(${nebulaImage})`,
+          backgroundSize: "cover",
+        }}
         className="flex-grow flex flex-col justify-center items-center bg-cover"
       >
-        <h1 className="text-white text-base md:text-5xl mb-16">
+        <h1 className="text-white md:text-5xl mb-16">
           Let us do the magic for you
         </h1>
 
@@ -63,7 +66,7 @@ function HeroContainer() {
         >
           <input
             type="text"
-            className="w-2/3 px-4 py-2 rounded-l-lg border text-white bg-gray-900 border-gray-300"
+            className="w-2/3 px-4 py-2 rounded-l-lg hover:border-[#ff83ff] border text-white bg-gray-900 border-white"
             placeholder="Enter Google Form URL..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -75,8 +78,8 @@ function HeroContainer() {
             Do Magic!
           </button>
         </form>
-        {isLoading && <p>Loading...</p>}
-        {isError && <p>Error: Unable to fetch data</p>}
+        {isLoading && <p className="text-white">Loading...</p>}
+        {isError && <p className="text-white">Error: Unable to fetch data</p>}
 
         {/* Display the data when not loading and no error */}
         {!isLoading && !isError && (

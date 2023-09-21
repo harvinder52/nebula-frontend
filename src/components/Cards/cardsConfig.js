@@ -1,24 +1,25 @@
+import greenCardImg from "../../assets/cards/green.png";
+import redCardImg from "../../assets/cards/red.png";
 
-
-const cardConfig = [
+const cardsConfig = [
   {
     id: 1,
     title: "Card 1",
     description: "This is the first card.",
-    imageUrl: "card1.jpg",
+    imageUrl: greenCardImg,
   },
   {
     id: 2,
     title: "Card 2",
     description: "This is the second card.",
-    imageUrl: "card2.jpg",
+    imageUrl: redCardImg,
   },
   {
-    id: 2,
-    title: "Card 2",
-    description: "This is the second card.",
-    imageUrl: "card2.jpg",
+    id: 3,
+    title: "Card 3",
+    description: "This is the third card.",
+    imageUrl: redCardImg,
   },
 ];
 
-export default cardConfig;
+export default cardsConfig;
