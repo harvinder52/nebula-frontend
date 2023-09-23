@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { useEffect, useState } from "react";
-import nebulaImage from "../assets/nebula.jpg";
+
 import Cards from "./Cards";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormData } from "../features/formSlice";
@@ -43,47 +43,51 @@ function HeroContainer() {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col ">
-      <nav className="bg-black p-4 text-white">
+    <div className="h-screen  smooth w-full flex flex-col ">
+      <nav className="m-0 text-3xl py-2 px-8 relative font-extrabold font-mono text-center bg-white border border-gray-300 rounded-lg shadow-lg tracking-widest">
         <div className="container mx-auto">
-          <span className="text-xl font-bold">Nebula form</span>
+          <span className="text-xl font-bold">PROJECT NEBULA</span>
         </div>
       </nav>
       <div
-        style={{
-          backgroundImage: `url(${nebulaImage})`,
-          backgroundSize: "cover",
-        }}
-        className="flex-grow flex flex-col justify-center items-center bg-cover"
+        //add image here for home's background
+        // style={{
+        //   backgroundImage: `url(${nebulaImage})`,
+        //   backgroundSize: "cover",
+        // }}
+        className="flex-grow heroDiv h-auto  bg-white flex flex-col flex-wrap justify-center items-center bg-cover"
       >
-        <h1 className="text-white md:text-5xl mb-16">
+        <h1 className="text-white text-focus-in md:text-5xl mb-16">
           Let us do the magic for you
         </h1>
 
         <form
-          className="flex  w-full justify-center items-center"
+          className="flex  w-full justify-center  transform  hover:scale-110
+          transition duration-500 items-center"
           onSubmit={handleSubmit}
         >
-          <input
-            type="text"
-            className="w-2/3 px-4 py-2 rounded-l-lg hover:border-[#ff83ff] border text-white bg-gray-900 border-white"
-            placeholder="Enter Google Form URL..."
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-black border border-gray-300 text-white px-4 py-2 rounded-r-lg hover:bg-black-900"
-          >
-            Do Magic!
-          </button>
+          <div className="flex w-2/3 shadow-2xl  shadow-slate-400 ">
+            <input
+              type="text"
+              className="w-full px-4  text-gray-500 py-2 text-blue rounded-l-lg  border-none text-xl text-gray-700 border-gray-300 focus:outline-none focus:border-blue-500"
+              placeholder="Enter Google Form URL..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-white border text-black border-gray-300 text-white px-10 py-2 border  rounded-r-lg   hover:outline-slate-500"
+            >
+              Do Magic!!
+            </button>
+          </div>
         </form>
         {isLoading && <p className="text-white">Loading...</p>}
         {isError && <p className="text-white">Error: Unable to fetch data</p>}
 
         {/* Display the data when not loading and no error */}
         {!isLoading && !isError && (
-          <div className="fade-in show">
+          <div className="fade-in show ">
             <Cards />
           </div>
 

@@ -5,24 +5,32 @@ import { useNavigate } from "react-router-dom";
 function Cards() {
   const navigate = useNavigate();
   return (
-    <div className="bg-white flex flex-grow w-full">
-      {cardsConfig.map((card) => {
+    <div className="bg-transparent  flex flex-wrap p-5 w-full">
+      {cardsConfig.map((card, index) => {
         return (
-          <div className="card">
-            <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          <div
+            key={index}
+            className="card m-5 shadow-2xl  rounded-lg   shadow-white outline-red"
+          >
+            <div className="max-w-sm bg-slate-100 border group relative border-red rounded-lg shadow ">
               <a href="#">
-                <img className="rounded-t-lg" src={card.imageUrl} alt="" />
+                <img
+                  className="rounded-t-lg  transform  hover:scale-110
+                  transition duration-500 rounded-xs  transform scale-100 group-hover:scale-110 "
+                  src={card.imageUrl}
+                  alt=""
+                />
               </a>
-              <div className="p-5">
+              <div className="p-5 ">
                 <a href="#">
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-slate-500 ">
                     {card.title}
                   </h5>
                 </a>
 
                 <a
                   href="#"
-                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-gray-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   onClick={() => navigate("/Form", { state: { test: "row" } })}
                 >
                   Apply Now!

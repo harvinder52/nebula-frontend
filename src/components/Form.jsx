@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import nebula from "../assets/nebula.png";
+
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { useSelector } from "react-redux";
 
 function Form() {
   const formData = useSelector((state) => state.formReducer.value);
+
   const formActionURL = `https://docs.google.com/forms/d/${formData.Action}/formResponse`;
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [prevActiveIndex, setPrevActiveIndex] = useState(activeIndex);
+  const bgColor = [
+    "red",
+    "purple",
+    "green",
+    "teal",
+    "blue",
+    "lime",
+    "lime",
+    "pink",
+    "teal",
+    "orange",
+  ];
 
   const initialFormData = {};
   formData.Fields.forEach((field) => {
@@ -15,8 +34,8 @@ function Form() {
     initialFormData[`entry.${field.Widgets[0].ID}`] = "";
   });
 
-  console.log(initialFormData);
   const [formValues, setFormValues] = useState(initialFormData);
+  const lastIndex = formData.Fields.length - 1;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,8 +43,20 @@ function Form() {
       ...formValues,
       [name]: value,
     });
-    console.log("form values", formValues, formActionURL);
   };
+  const nextSlide = () => {
+    setPrevActiveIndex(activeIndex);
+    setActiveIndex((prevIndex) =>
+      prevIndex < lastIndex ? prevIndex + 1 : prevIndex
+    );
+  };
+  const prevSlide = () => {
+    setPrevActiveIndex(activeIndex);
+    setActiveIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+  };
+  useEffect(() => {
+    console.log(prevActiveIndex);
+  }, [prevActiveIndex]);
 
   function getInputData() {
     let dataToPost = new FormData(); //formdata API
@@ -44,7 +75,6 @@ function Form() {
 
     return dataToPost;
   }
-  console.log(formValues["entry.1741648865"]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,8 +112,104 @@ function Form() {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl text-gray-600 font-semibold text-center">
+    <div className=" mx-auto  bg-gray-600 rounded shadow">
+      <div className="relative  h-screen overflow-hidden">
+        <div>
+          <form
+            action={formActionURL}
+            method="POST"
+            onSubmit={handleSubmit}
+            className="absolute inset-0 flex justify-center items-center"
+          >
+            {/* <img src={nebula}></img> */}
+            {formData.Fields.map((field, index) => (
+              <div
+                key={index}
+                className={`w-full h-full absolute shadow-2xl flex justify-center flex-col items-center transition-transform duration-500 transform ${
+                  activeIndex === index ? "translate-x-0" : "translate-x-full"
+                } bg-${bgColor[index]}-500`}
+              >
+                {/* top secret code */}
+                <div
+                  className={`w-3/4 content ${
+                    activeIndex == index && activeIndex >= prevActiveIndex
+                      ? "slide-in-bottom"
+                      : activeIndex <= prevActiveIndex && activeIndex === index
+                      ? "slide-in-top"
+                      : ""
+                  }`}
+                >
+                  {console.log(
+                    activeIndex,
+                    prevActiveIndex,
+                    index,
+
+                    activeIndex < index ? "slide-in-top" : "slide-in-bottom"
+                  )}
+                  <span className="w-full text-white  flex items-center text-5xl  m-5 justify-start">
+                    <div
+                      className="flex text-slate-300 text-2xl items-center mx-5"
+                      style={{ marginLeft: "-5rem" }}
+                    >
+                      {index + 1}.
+                      <AiOutlineArrowRight style={{ fontSize: "100%" }} />
+                    </div>
+
+                    {field.Label}
+                  </span>
+                  <input
+                    type={field.TypeID === 0 ? "text" : "email"}
+                    name={`entry.${field.Widgets[0].ID}`}
+                    id={`inp${field.Widgets[0].ID}`}
+                    required={field.Widgets[0].required}
+                    placeholder={field.Label}
+                    className="w-full px-4 transform  hover:scale-110
+                    transition duration-500 text-gray-500 py-4 text-blue rounded-lg border-none text-2xl text-gray-700 border-gray-300 focus:outline-none focus:border-blue-500"
+                    value={formValues[`entry.${field.Widgets[0].ID}`]}
+                    onChange={handleInputChange}
+                  />
+                  {lastIndex === activeIndex ? (
+                    <button
+                      className="bg-white border text-black my-10 border-gray-300 text-white px-10 py-2 border  rounded-lg   hover:outline-slate-500"
+                      onClick={console.log("first")}
+                    >
+                      Submit
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+            ))}
+          </form>
+        </div>
+        <div className="absolute  bottom-0 left-0 right-0 flex  justify-end  p-12">
+          <div
+            disabled={true}
+            className="  w-full fixed flex justify-start items-center  left-0 top-0  text-white bg-transparent  text-2xl font-sans tracking-tighter   p-4"
+          >
+            <span className="text-4xl border rotate-center rounded-full px-4 py-2 mr-1">
+              N
+            </span>
+            Nebula Forms
+          </div>
+          <button
+            className="bg-white mr-4  heartbeat  text-3xl text-slate-500 px-4 py-2 rounded-full"
+            onClick={prevSlide}
+          >
+            <div className="rotate-180">{0 === activeIndex ? "☒" : "➜"}</div>
+          </button>
+
+          <button
+            className="bg-white heartbeat text-3xl text-slate-500 px-4 py-2 rounded-full"
+            onClick={nextSlide}
+            disabled={lastIndex === activeIndex ? true : false}
+          >
+            {lastIndex === activeIndex ? "☑" : "➜"}
+          </button>
+        </div>
+      </div>
+      {/* <h2 className="text-2xl text-gray-600 font-semibold text-center">
         {formData.Title}
       </h2>
       <p className="text-gray-600 text-center">{formData.Header}</p>
@@ -93,19 +219,22 @@ function Form() {
           action={formActionURL}
           method="POST"
           onSubmit={handleSubmit}
-          className="max-w-md mx-auto p-4 border rounded-lg shadow-lg"
+          className="max-w-md mx-auto p-4 "
         >
           {formData.Fields.map((field) => (
-            <input
-              type={field.TypeID === 0 ? "text" : "email"}
-              name={`entry.${field.Widgets[0].ID}`}
-              id={`inp${field.Widgets[0].ID}`}
-              required={field.Widgets[0].required}
-              placeholder={field.Label}
-              className="w-full px-4 text-white py-2 text-blue rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
-              value={formValues[`entry.${field.Widgets[0].ID}`]}
-              onChange={handleInputChange}
-            />
+            <div className="max-w-md mx-auto p-4 border rounded-lg ">
+              <label htmlFor={`inp${field.Widgets[0].ID}`}>{field.Label}</label>
+              <input
+                type={field.TypeID === 0 ? "text" : "email"}
+                name={`entry.${field.Widgets[0].ID}`}
+                id={`inp${field.Widgets[0].ID}`}
+                required={field.Widgets[0].required}
+                placeholder={field.Label}
+                className="w-full px-4 text-white py-2 text-blue rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                value={formValues[`entry.${field.Widgets[0].ID}`]}
+                onChange={handleInputChange}
+              />
+            </div>
           ))}
 
           <button
@@ -119,7 +248,7 @@ function Form() {
         <p className="text-center text-green-500 font-semibold">
           Form Submitted!
         </p>
-      )}
+      )} */}
     </div>
   );
 }

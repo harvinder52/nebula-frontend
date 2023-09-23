@@ -14,12 +14,6 @@ const cardsConfig = [
     description: "This is the second card.",
     imageUrl: redCardImg,
   },
-  {
-    id: 3,
-    title: "Card 3",
-    description: "This is the third card.",
-    imageUrl: redCardImg,
-  },
 ];
 
 export default cardsConfig;
