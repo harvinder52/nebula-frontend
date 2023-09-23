@@ -173,7 +173,7 @@ function Form() {
                       className="bg-white border text-black my-10 border-gray-300 text-white px-10 py-2 border  rounded-lg   hover:outline-slate-500"
                       onClick={console.log("first")}
                     >
-                      Submit
+                      Submit!
                     </button>
                   ) : (
                     ""
