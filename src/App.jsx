@@ -6,8 +6,6 @@ import Form from "./components/Form";
 import { About } from "./components/About";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <Router>
       <Routes>

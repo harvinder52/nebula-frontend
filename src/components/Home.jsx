@@ -90,10 +90,6 @@ function HeroContainer() {
           <div className="fade-in show ">
             <Cards />
           </div>
-
-          // <textarea mt-4 rows="10" cols="100">
-          //   {JSON.stringify(data, undefined, 4)}
-          // </textarea>
         )}
       </div>
     </div>

@@ -1,12 +1,18 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import nebula from "../assets/nebula.png";
+import fetchData from "../api/api";
 
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { useSelector } from "react-redux";
 
 function Form() {
+  const { id } = Object.fromEntries(new URLSearchParams(location.search));
+  (async () => {
+    await fetchData(id);
+  })();
+
   const formData = useSelector((state) => state.formReducer.value);
 
   const formActionURL = `https://docs.google.com/forms/d/${formData.Action}/formResponse`;
@@ -196,6 +202,7 @@ function Form() {
           <button
             className="bg-white mr-4  heartbeat  text-3xl text-slate-500 px-4 py-2 rounded-full"
             onClick={prevSlide}
+            disabled={0 === activeIndex ? true : false}
           >
             <div className="rotate-180">{0 === activeIndex ? "☒" : "➜"}</div>
           </button>
