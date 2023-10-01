@@ -7,24 +7,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFormData } from "../features/formSlice";
 
 function HeroContainer() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(false);
   const [url, setUrl] = useState(
     "https://docs.google.com/forms/d/e/1FAIpQLSdMcf4ie0pBmM4gG77dtgw2mNjUB6q_lxaXlfKEuYlLgi5EDA/viewform"
   );
 
-  const [isLoading, setIsLoading] = useState(false); // Initialize isLoading as false
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const dispatch = useDispatch();
 
   async function fetchData() {
-    setIsLoading(true); // Set isLoading to true while the request is in progress
-    setIsError(false); // Reset isError to false
+    setIsLoading(true);
+    setIsError(false);
     try {
       const response = await axios.get(`http://127.0.0.1:8000/?url=${url}`);
       const result = response.data;
       console.log(result);
-      setData(result);
+      setData(true);
       dispatch(setFormData(result));
     } catch (error) {
       setIsError(true); // Set isError to true if an error occurs
@@ -34,9 +34,6 @@ function HeroContainer() {
     }
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     fetchData();
@@ -62,7 +59,7 @@ function HeroContainer() {
         </h1>
 
         <form
-          className="flex  w-full justify-center  transform  hover:scale-110
+          className="flex  w-full justify-center  transform  hover:scale-105
           transition duration-500 items-center"
           onSubmit={handleSubmit}
         >
@@ -76,17 +73,25 @@ function HeroContainer() {
             />
             <button
               type="submit"
-              className="bg-white border text-black border-gray-300 text-white px-10 py-2 border  rounded-r-lg   hover:outline-slate-500"
+              className="bg-white border text-black border-gray-300 text-slate-800 px-10 py-2 border  rounded-r-lg   hover:outline-slate-500"
             >
               Do Magic!!
             </button>
           </div>
         </form>
-        {isLoading && <p className="text-white">Loading...</p>}
-        {isError && <p className="text-white">Error: Unable to fetch data</p>}
+        {isLoading && (
+          <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
+            Loading...
+          </p>
+        )}
+        {isError && (
+          <p className=" bg-white text-xl border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
+            Error: Unable to fetch data
+          </p>
+        )}
 
         {/* Display the data when not loading and no error */}
-        {!isLoading && !isError && (
+        {!isLoading && !isError && data && (
           <div className="fade-in show ">
             <Cards />
           </div>

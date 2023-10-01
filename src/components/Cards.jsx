@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function Cards() {
   const navigateSearch = useNavigateSearch();
   const formData = useSelector((state) => state.formReducer.value);
+  console.log(formData);
 
   const formActionURL = formData.Action.replace("e/", "");
 

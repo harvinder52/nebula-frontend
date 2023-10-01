@@ -5,22 +5,58 @@ import fetchData from "../api/api";
 
 import { AiOutlineArrowRight } from "react-icons/ai";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearFormData, setFormData } from "../features/formSlice";
 
 function Form() {
-  const { id } = Object.fromEntries(new URLSearchParams(location.search));
-  (async () => {
-    await fetchData(id);
-  })();
-
-  const formData = useSelector((state) => state.formReducer.value);
-
-  const formActionURL = `https://docs.google.com/forms/d/${formData.Action}/formResponse`;
-
+  const initialFormData = {};
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [formValues, setFormValues] = useState(initialFormData);
+  const [isError, setIsError] = useState(false);
+  const [urlFormData, setUrlFormData] = useState({});
+  let formData = useSelector((state) => state.formReducer.value);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [prevActiveIndex, setPrevActiveIndex] = useState(activeIndex);
+  const { id } = Object.fromEntries(new URLSearchParams(location.search));
+
+  // useEffect(() => {
+  //   async function fetchDataAsync() {
+  //     await fetchData(id);
+  //   }
+
+  //   fetchDataAsync();
+  //   console.log("fetch useffect");
+  // }, []);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (Object.keys(formData).length === 0) {
+      setIsError(false);
+      console.log(Object.keys(formData).length);
+
+      fetchData(id)
+        .then((data) => {
+          dispatch(setFormData(data));
+          console.log("useEffect in fetchData", data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsError(true);
+          console.error("Error fetching data:", error);
+        });
+    } else {
+      setIsLoading(false);
+    }
+  }, [dispatch, id]);
+  useEffect(() => {
+    console.log(prevActiveIndex);
+  }, [prevActiveIndex]);
+
+  console.log(Object.keys(formData).length, "length is what");
+
+  const formActionURL = `https://docs.google.com/forms/d/${formData.Action}/formResponse`;
+
   const bgColor = [
     "red",
     "purple",
@@ -34,14 +70,30 @@ function Form() {
     "orange",
   ];
 
-  const initialFormData = {};
-  formData.Fields.forEach((field) => {
-    console.log(field.Widgets[0].ID);
-    initialFormData[`entry.${field.Widgets[0].ID}`] = "";
-  });
+  // if (isLoading) {
+  //   return (
+  //     <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
+  //       Loading...
+  //     </p>
+  //   );
+  // }
+  if (isError) {
+    return (
+      <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
+        Error...
+      </p>
+    );
+  }
 
-  const [formValues, setFormValues] = useState(initialFormData);
-  const lastIndex = formData.Fields.length - 1;
+  if (Object.keys(formData).length !== 0) {
+    console.log(formData, "object keys lenght");
+    formData.Fields.forEach((field) => {
+      console.log(field.Widgets[0].ID);
+      initialFormData[`entry.${field.Widgets[0].ID}`] = "";
+    });
+  }
+
+  const lastIndex = formData.Fields?.length - 1;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,9 +112,6 @@ function Form() {
     setPrevActiveIndex(activeIndex);
     setActiveIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
   };
-  useEffect(() => {
-    console.log(prevActiveIndex);
-  }, [prevActiveIndex]);
 
   function getInputData() {
     let dataToPost = new FormData(); //formdata API
@@ -72,11 +121,7 @@ function Form() {
 
       dataToPost.append(key, formValues[key]);
     }
-    // dataToPost.append("entry.1741648865", formValues["entry.1741648865"]);
-    // dataToPost.append("entry.347094691", "harvinder");
-    // dataToPost.append("entry.1979937581", "harvinder");
-    // dataToPost.append("entry.534076170", "harvinder");
-    // dataToPost.append("entry.544181557", "harvinder");
+
     console.log(dataToPost);
 
     return dataToPost;
@@ -119,75 +164,75 @@ function Form() {
 
   return (
     <div className=" mx-auto  bg-gray-600 rounded shadow">
-      <div className="relative  h-screen overflow-hidden">
+      <div className="relative  w-screen flex justify-center items-center h-screen overflow-hidden">
         <div>
-          <form
-            action={formActionURL}
-            method="POST"
-            onSubmit={handleSubmit}
-            className="absolute inset-0 flex justify-center items-center"
-          >
-            {/* <img src={nebula}></img> */}
-            {formData.Fields.map((field, index) => (
-              <div
-                key={index}
-                className={`w-full h-full absolute shadow-2xl flex justify-center flex-col items-center transition-transform duration-500 transform ${
-                  activeIndex === index ? "translate-x-0" : "translate-x-full"
-                } bg-${bgColor[index]}-500`}
-              >
-                {/* top secret code */}
+          {isLoading ? ( // Render loading message if isLoading is true
+            <p className="text-xl w-50  rotate-center-loading   bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5">
+              Loading...
+            </p>
+          ) : (
+            <form
+              action={formActionURL}
+              method="POST"
+              onSubmit={handleSubmit}
+              className="absolute inset-0 flex justify-center items-center"
+            >
+              {/* <img src={nebula}></img> */}
+              {formData.Fields.map((field, index) => (
                 <div
-                  className={`w-3/4 content ${
-                    activeIndex == index && activeIndex >= prevActiveIndex
-                      ? "slide-in-bottom"
-                      : activeIndex <= prevActiveIndex && activeIndex === index
-                      ? "slide-in-top"
-                      : ""
-                  }`}
+                  key={index}
+                  className={`w-full h-full absolute shadow-2xl flex justify-center flex-col items-center transition-transform duration-500 transform ${
+                    activeIndex === index ? "translate-x-0" : "translate-x-full"
+                  } bg-${bgColor[index]}-500`}
                 >
-                  {console.log(
-                    activeIndex,
-                    prevActiveIndex,
-                    index,
+                  {/* top secret code */}
+                  <div
+                    className={`w-3/4 content ${
+                      activeIndex == index && activeIndex >= prevActiveIndex
+                        ? "slide-in-bottom"
+                        : activeIndex <= prevActiveIndex &&
+                          activeIndex === index
+                        ? "slide-in-top"
+                        : ""
+                    }`}
+                  >
+                    <span className="w-full text-white  flex items-center text-5xl  m-5 justify-start">
+                      <div
+                        className="flex text-slate-300 text-2xl items-center mx-5"
+                        style={{ marginLeft: "-5rem" }}
+                      >
+                        {index + 1}.
+                        <AiOutlineArrowRight style={{ fontSize: "100%" }} />
+                      </div>
 
-                    activeIndex < index ? "slide-in-top" : "slide-in-bottom"
-                  )}
-                  <span className="w-full text-white  flex items-center text-5xl  m-5 justify-start">
-                    <div
-                      className="flex text-slate-300 text-2xl items-center mx-5"
-                      style={{ marginLeft: "-5rem" }}
-                    >
-                      {index + 1}.
-                      <AiOutlineArrowRight style={{ fontSize: "100%" }} />
-                    </div>
-
-                    {field.Label}
-                  </span>
-                  <input
-                    type={field.TypeID === 0 ? "text" : "email"}
-                    name={`entry.${field.Widgets[0].ID}`}
-                    id={`inp${field.Widgets[0].ID}`}
-                    required={field.Widgets[0].required}
-                    placeholder={field.Label}
-                    className="w-full px-4 transform  hover:scale-110
+                      {field.Label}
+                    </span>
+                    <input
+                      type={field.TypeID === 0 ? "text" : "email"}
+                      name={`entry.${field.Widgets[0].ID}`}
+                      id={`inp${field.Widgets[0].ID}`}
+                      required={field.Widgets[0].required}
+                      placeholder={field.Label}
+                      className="w-full px-4 transform  hover:scale-110
                     transition duration-500 text-gray-500 py-4 text-blue rounded-lg border-none text-2xl text-gray-700 border-gray-300 focus:outline-none focus:border-blue-500"
-                    value={formValues[`entry.${field.Widgets[0].ID}`]}
-                    onChange={handleInputChange}
-                  />
-                  {lastIndex === activeIndex ? (
-                    <button
-                      className="bg-white border text-black my-10 border-gray-300 text-white px-10 py-2 border  rounded-lg   hover:outline-slate-500"
-                      onClick={console.log("first")}
-                    >
-                      Submit!
-                    </button>
-                  ) : (
-                    ""
-                  )}
+                      value={formValues[`entry.${field.Widgets[0].ID}`]}
+                      onChange={handleInputChange}
+                    />
+                    {lastIndex === activeIndex ? (
+                      <button
+                        className="bg-white border text-black my-10 border-gray-300 text-white px-10 py-2 border  rounded-lg   hover:outline-slate-500"
+                        onClick={console.log("first")}
+                      >
+                        Submit!
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </form>
+              ))}
+            </form>
+          )}
         </div>
         <div className="absolute  bottom-0 left-0 right-0 flex  justify-end  p-12">
           <div
@@ -216,46 +261,6 @@ function Form() {
           </button>
         </div>
       </div>
-      {/* <h2 className="text-2xl text-gray-600 font-semibold text-center">
-        {formData.Title}
-      </h2>
-      <p className="text-gray-600 text-center">{formData.Header}</p>
-
-      {!formSubmitted ? (
-        <form
-          action={formActionURL}
-          method="POST"
-          onSubmit={handleSubmit}
-          className="max-w-md mx-auto p-4 "
-        >
-          {formData.Fields.map((field) => (
-            <div className="max-w-md mx-auto p-4 border rounded-lg ">
-              <label htmlFor={`inp${field.Widgets[0].ID}`}>{field.Label}</label>
-              <input
-                type={field.TypeID === 0 ? "text" : "email"}
-                name={`entry.${field.Widgets[0].ID}`}
-                id={`inp${field.Widgets[0].ID}`}
-                required={field.Widgets[0].required}
-                placeholder={field.Label}
-                className="w-full px-4 text-white py-2 text-blue rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
-                value={formValues[`entry.${field.Widgets[0].ID}`]}
-                onChange={handleInputChange}
-              />
-            </div>
-          ))}
-
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
-          >
-            Send Message
-          </button>
-        </form>
-      ) : (
-        <p className="text-center text-green-500 font-semibold">
-          Form Submitted!
-        </p>
-      )} */}
     </div>
   );
 }

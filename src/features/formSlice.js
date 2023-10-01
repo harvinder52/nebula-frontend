@@ -9,10 +9,16 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setFormData: (state, action) => {
-      state.value = action.payload;
+      return {
+        ...state,
+        value: action.payload,
+      };
     },
     clearFormData: (state) => {
-      state.value = {};
+      return {
+        ...state,
+        value: {},
+      };
     },
   },
 });
