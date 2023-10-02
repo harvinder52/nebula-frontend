@@ -10,6 +10,7 @@ import { clearFormData, setFormData } from "../features/formSlice";
 
 function Form() {
   const initialFormData = {};
+
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [formValues, setFormValues] = useState(initialFormData);
@@ -182,7 +183,9 @@ function Form() {
                 <div
                   key={index}
                   className={`w-full h-full absolute shadow-2xl flex justify-center flex-col items-center transition-transform duration-500 transform ${
-                    activeIndex === index ? "translate-x-0" : "translate-x-full"
+                    activeIndex === index
+                      ? "translate-x-0 "
+                      : "translate-x-full "
                   } bg-${bgColor[index]}-500`}
                 >
                   {/* top secret code */}
@@ -235,19 +238,23 @@ function Form() {
           )}
         </div>
         <div className="absolute  bottom-0 left-0 right-0 flex  justify-end  p-12">
-          <div
-            disabled={true}
-            className="  w-full fixed flex justify-start items-center  left-0 top-0  text-white bg-transparent  text-2xl font-sans tracking-tighter   p-4"
-          >
-            <span className="text-4xl border rotate-center rounded-full px-4 py-2 mr-1">
-              N
-            </span>
-            Nebula Forms
-          </div>
+          <a href="/">
+            <div
+              disabled={true}
+              href="/home"
+              className="  w-full fixed flex justify-start items-center  left-0 top-0  text-white bg-transparent  text-2xl font-sans tracking-tighter   p-4"
+            >
+              <span className="text-4xl border rotate-center rounded-full px-4 py-2 mr-1">
+                N
+              </span>
+              Nebula Forms
+            </div>
+          </a>
           <button
             className="bg-white mr-4  heartbeat  text-3xl text-slate-500 px-4 py-2 rounded-full"
             onClick={prevSlide}
             disabled={0 === activeIndex ? true : false}
+            style={{ cursor: "pointer" }}
           >
             <div className="rotate-180">{0 === activeIndex ? "☒" : "➜"}</div>
           </button>

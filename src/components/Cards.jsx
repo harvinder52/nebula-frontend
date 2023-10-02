@@ -13,7 +13,7 @@ function Cards() {
   const goToForm = () => navigateSearch("/form", { id: formActionURL });
 
   return (
-    <div className="bg-transparent  flex flex-wrap p-5 w-full">
+    <div className="bg-transparent justify-center items-center flex flex-wrap p-5 w-full">
       {cardsConfig.map((card, index) => {
         return (
           <div
