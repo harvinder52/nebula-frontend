@@ -7,6 +7,9 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { useDispatch, useSelector } from "react-redux";
 import { clearFormData, setFormData } from "../features/formSlice";
+import MultipleChoice from "./InputComponents/MultipleChoice";
+import InputSelect from "./InputComponents/InputSelect";
+import CheckBoxes from "./InputComponents/CheckBoxes";
 
 function Form() {
   const initialFormData = {};
@@ -43,7 +46,9 @@ function Form() {
           setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           setIsError(true);
+
           console.error("Error fetching data:", error);
         });
     } else {
@@ -78,13 +83,13 @@ function Form() {
   //     </p>
   //   );
   // }
-  if (isError) {
-    return (
-      <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
-        Error...
-      </p>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
+  //       Error...
+  //     </p>
+  //   );
+  // }
 
   if (Object.keys(formData).length !== 0) {
     console.log(formData, "object keys lenght");
@@ -167,9 +172,11 @@ function Form() {
     <div className=" mx-auto  bg-gray-600 rounded shadow">
       <div className="relative  w-screen flex justify-center items-center h-screen overflow-hidden">
         <div>
-          {isLoading ? ( // Render loading message if isLoading is true
-            <p className="text-xl w-50  rotate-center-loading   bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5">
-              Loading...
+          {isLoading ? (
+            <div className="rotate-center-loading e h-16  w-16 border-8 border border-t-gray-500 rounded-full border-white "></div>
+          ) : isError ? (
+            <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
+              Unable to Fetch Data....
             </p>
           ) : (
             <form
@@ -210,17 +217,62 @@ function Form() {
 
                       {field.Label}
                     </span>
-                    <input
-                      type={field.TypeID === 0 ? "text" : "email"}
-                      name={`entry.${field.Widgets[0].ID}`}
-                      id={`inp${field.Widgets[0].ID}`}
-                      required={field.Widgets[0].required}
-                      placeholder={field.Label}
-                      className="w-full px-4 transform  hover:scale-110
-                    transition duration-500 text-gray-500 py-4 text-blue rounded-lg border-none text-2xl text-gray-700 border-gray-300 focus:outline-none focus:border-blue-500"
-                      value={formValues[`entry.${field.Widgets[0].ID}`]}
-                      onChange={handleInputChange}
-                    />
+
+                    <div>
+                      {(() => {
+                        switch (field.TypeID) {
+                          case 0:
+                            return (
+                              <input
+                                type={"text"}
+                                name={`entry.${field.Widgets[0].ID}`}
+                                id={`inp${field.Widgets[0].ID}`}
+                                required={field.Widgets[0].required}
+                                placeholder={field.Label}
+                                className="w-full px-4 transform  hover:scale-110
+                          transition duration-500 text-gray-500 py-4 text-blue rounded-lg border-none text-2xl text-gray-700 border-gray-300 focus:outline-none focus:border-blue-500"
+                                value={
+                                  formValues[`entry.${field.Widgets[0].ID}`]
+                                }
+                                onChange={handleInputChange}
+                              />
+                            );
+                          case 1:
+                            return (
+                              <input
+                                type={field.TypeID === 0 ? "text" : "email"}
+                                name={`entry.${field.Widgets[0].ID}`}
+                                id={`inp${field.Widgets[0].ID}`}
+                                required={field.Widgets[0].required}
+                                placeholder={field.Label}
+                                className="w-full px-4 transform  hover:scale-110
+                          transition duration-500 text-gray-500 py-4 text-blue rounded-lg border-none text-2xl text-gray-700 border-gray-300 focus:outline-none focus:border-blue-500"
+                                value={
+                                  formValues[`entry.${field.Widgets[0].ID}`]
+                                }
+                                onChange={handleInputChange}
+                              />
+                            );
+                          case 2:
+                            return (
+                              <InputSelect options={field.Widgets[0].options} />
+                            );
+                          // Continue with cases for 3 to 10
+                          case 3:
+                            return <MultipleChoice />;
+                          case 4:
+                            return (
+                              <CheckBoxes options={field.Widgets[0].options} />
+                            );
+
+                          case 10:
+                            return <MultipleChoice />;
+                          default:
+                            return <MultipleChoice />;
+                        }
+                      })()}
+                    </div>
+
                     {lastIndex === activeIndex ? (
                       <button
                         className="bg-white border text-black my-10 border-gray-300 text-white px-10 py-2 border  rounded-lg   hover:outline-slate-500"
