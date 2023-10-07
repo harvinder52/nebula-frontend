@@ -1,16 +1,23 @@
 import React from "react";
 import cardsConfig from "./Cards/cardsConfig";
 import { useNavigateSearch } from "../hooks/navigateHook";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setThemeConfig } from "../features/themeSlice";
+import themeConfigs from "../assets/themes/themeConfig";
 function Cards() {
   const navigateSearch = useNavigateSearch();
+  const dispatch = useDispatch();
+  let theme = useSelector((state) => state.theme);
   const formData = useSelector((state) => state.formReducer.value);
   console.log(formData);
 
   const formActionURL = formData.Action.replace("e/", "");
 
-  const goToForm = () => navigateSearch("/form", { id: formActionURL });
+  const goToForm = (index) => {
+    dispatch(setThemeConfig(themeConfigs[index]));
+    navigateSearch("/form", { id: formActionURL });
+  };
 
   return (
     <div className="bg-transparent justify-center items-center flex flex-wrap p-5 w-full">
@@ -39,7 +46,7 @@ function Cards() {
                 <a
                   href="#"
                   className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-gray-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={() => goToForm()}
+                  onClick={() => goToForm(index)}
                 >
                   Apply Now!
                   <svg

@@ -20,6 +20,7 @@ function Form() {
   const [isError, setIsError] = useState(false);
   const [urlFormData, setUrlFormData] = useState({});
   let formData = useSelector((state) => state.formReducer.value);
+  const themeConfig = useSelector((state) => state.theme);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [prevActiveIndex, setPrevActiveIndex] = useState(activeIndex);
@@ -75,21 +76,6 @@ function Form() {
     "teal",
     "orange",
   ];
-
-  // if (isLoading) {
-  //   return (
-  //     <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
-  //       Loading...
-  //     </p>
-  //   );
-  // }
-  // if (isError) {
-  //   return (
-  //     <p className=" text-xl bg-white border text-black border-gray-300 rounded-lg hover:outline-slate-500 m-2 p-5 ">
-  //       Error...
-  //     </p>
-  //   );
-  // }
 
   if (Object.keys(formData).length !== 0) {
     console.log(formData, "object keys lenght");
@@ -303,7 +289,7 @@ function Form() {
             </div>
           </a>
           <button
-            className="bg-white mr-4  heartbeat  text-3xl text-slate-500 px-4 py-2 rounded-full"
+            className={themeConfig.prevSlideBtn}
             onClick={prevSlide}
             disabled={0 === activeIndex ? true : false}
             style={{ cursor: "pointer" }}
@@ -312,7 +298,7 @@ function Form() {
           </button>
 
           <button
-            className="bg-white heartbeat text-3xl text-slate-500 px-4 py-2 rounded-full"
+            className={themeConfig.nextSlideBtn}
             onClick={nextSlide}
             disabled={lastIndex === activeIndex ? true : false}
           >

@@ -15,7 +15,7 @@ function ListItem({ text, selected, onChange }) {
           onChange={onChange}
           className="form-checkbox mr-2 h-5 w-5 text-indigo-600 border border-gray-300 focus:ring-indigo-400"
         />
-        <span className="  text-3xl m-2">{text}</span>
+        <span className=" text-slate-700 text-3xl m-2">{text}</span>
       </label>
     </li>
   );
